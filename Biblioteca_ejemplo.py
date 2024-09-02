@@ -15,6 +15,3 @@ class Biblioteca_ejemplo:
                 return False
 
 
-
-    def obtener_libros(self):
-        return [libro for libro in self.lista_libros]
