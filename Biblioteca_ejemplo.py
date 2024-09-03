@@ -23,6 +23,6 @@ class Biblioteca:
         if not self.libros:
             print("No hay libros en la biblioteca.")
         else:
-            for libro in self.libros:
+            for libro in self.libros:       
                 print(libro)
 
