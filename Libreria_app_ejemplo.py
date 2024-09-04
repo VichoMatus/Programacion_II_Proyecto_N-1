@@ -3,7 +3,6 @@ from tkinter import ttk
 from Libros_ejemplo import Libros_ejemplo
 from Biblioteca_ejemplo import Biblioteca_ejemplo
 import re
-from CTkMessagebox import CTkMessagebox
 import Ayuda_Codigo as AC
 class AplicacionConPestanas(ctk.CTk):
 
