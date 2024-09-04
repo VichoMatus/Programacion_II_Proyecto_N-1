@@ -72,7 +72,10 @@ class AplicacionConPestanas(ctk.CTk):
         # Dividir la pestaña en dos frames
          
         frame_Menu = ctk.CTkFrame(self.tab2)
-        frame_Menu.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+        frame_Menu.pack(fill="both", expand=True, padx=10, pady=10)
+
+        frame_precio = ctk.CTkFrame(self.tab2)
+        frame_precio.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Formulario en el primer frame
         label_nombre = ctk.CTkLabel(frame_Menu, text="Nombre del Ingrediente:")
