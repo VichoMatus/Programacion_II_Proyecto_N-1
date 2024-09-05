@@ -3,8 +3,12 @@ from tkinter import ttk
 from Libros_ejemplo import Libros_ejemplo
 from Biblioteca_ejemplo import Biblioteca_ejemplo
 import re
+<<<<<<< HEAD:Restaurante.py
 from CTkMessagebox import CTkMessagebox
 
+=======
+import Ayuda_Codigo as AC
+>>>>>>> origin/nmartinez:Libreria_app_ejemplo.py
 class AplicacionConPestanas(ctk.CTk):
 
     def __init__(self):
@@ -68,7 +72,10 @@ class AplicacionConPestanas(ctk.CTk):
     def configurar_pestana2(self):
         # Dividir la pestaña en dos frames
         frame_Menu = ctk.CTkFrame(self.tab2)
-        frame_Menu.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+        frame_Menu.pack(fill="both", expand=True, padx=10, pady=10)
+
+        frame_precio = ctk.CTkFrame(self.tab2)
+        frame_precio.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Formulario en el primer frame
         label_nombre = ctk.CTkLabel(frame_Menu, text="Nombre del Ingrediente:")
