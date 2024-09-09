@@ -5,8 +5,6 @@ from ingredientes import Stock
 from pedido import Pedido, Menu
 from PIL import Image
 from fpdf import FPDF
-from datetime import datetime
-from collections import defaultdict
 
 class App(ctk.CTk):
     def __init__(self):
@@ -87,47 +85,18 @@ class App(ctk.CTk):
         img_pepsi = Image.open("iconos/icono_cola.png").resize((100,100))
         img_hamburguesa = Image.open("iconos/icono_hamburguesa.png").resize((100,100))
 
-        self.imagen_papas = ctk.CTkImage(img_papas)
-        self.imagen_completo = ctk.CTkImage(img_completo)
-        self.imagen_pepsi = ctk.CTkImage(img_pepsi)
-        self.imagen_hamburguesa = ctk.CTkImage(img_hamburguesa)
+        self.imagen_papas = ctk.CTkImage(img_papas)  # Cargar imagen de papas fritas en ctk
+        self.imagen_completo = ctk.CTkImage(img_completo)   # Cargar imagen de completo en ctk
+        self.imagen_pepsi = ctk.CTkImage(img_pepsi)         # Cargar imagen de pepsi en ctk
+        self.imagen_hamburguesa = ctk.CTkImage(img_hamburguesa)  # Cargar imagen de hamburguesa en ctk
 
-        self.imagen_papas = ctk.CTkImage(img_papas)
-        self.imagen_completo = ctk.CTkImage(img_completo)
-        self.imagen_pepsi = ctk.CTkImage(img_pepsi)
-        self.imagen_hamburguesa = ctk.CTkImage(img_hamburguesa)
-
-        #Botones de Menús con imágenes en el frame de menús
-        self.btn_papas = ctk.CTkButton(
-            frame_menus, 
-            image=self.imagen_papas, 
-            width=100, 
-            height=100,  # Aumentando la altura para el texto
-            text="Papas Fritas", 
-            command=lambda: self.agregar_menu("Papas Fritas"), 
-            fg_color="transparent",
-            text_color="black",
-            border_color="green",  # Borde visible
-            border_width=3,        # Grosor del borde
-            compound="top",         # Texto debajo de la imagen
-            hover_color="red"
-        )
+        # Botones de Menús con imágenes
+        self.btn_papas = ctk.CTkButton(frame, image=self.imagen_papas, text="Papas Fritas", command=lambda: self.pedido.agregar_menu("Papas Fritas"),fg_color="transparent")
         self.btn_papas.grid(row=0, column=0, padx=10, pady=10)
 
-        self.btn_completo = ctk.CTkButton(
-            frame_menus, 
-            image=self.imagen_completo, 
-            width=100, 
-            height=100,
-            text="Completo", 
-            command=lambda: self.agregar_menu("Completo"), 
-            fg_color="transparent",
-            text_color="black",
-            border_color="green", 
-            border_width=3,
-            compound="top",
-            hover_color="red"
-        )
+        
+
+        self.btn_completo = ctk.CTkButton(frame, image=self.imagen_completo, text="Completo", command=lambda: self.agregar_menu("Completo"),fg_color="transparent")
         self.btn_completo.grid(row=0, column=1, padx=10, pady=10)
 
         self.btn_pepsi = ctk.CTkButton(
@@ -146,24 +115,11 @@ class App(ctk.CTk):
         )
         self.btn_pepsi.grid(row=1, column=0, padx=10, pady=10)
 
-        self.btn_hamburguesa = ctk.CTkButton(
-            frame_menus, 
-            image=self.imagen_hamburguesa, 
-            width=100, 
-            height=100, 
-            text="Hamburguesa", 
-            command=lambda: self.agregar_menu("Hamburguesa"), 
-            fg_color="transparent",
-            text_color="black",
-            border_color="green", 
-            border_width=3,
-            compound="top",
-            hover_color="red"
-        )
-        self.btn_hamburguesa.grid(row=1, column=1, padx=10, pady=10)
-
-        # Tabla de pedido en el frame de pedido
-        self.tree_pedido = ttk.Treeview(frame_pedido, columns=("Nombre del Menú", "Cantidad", "Precio Unitario"), show="headings")
+        self.btn_hamburguesa = ctk.CTkButton(frame, image=self.imagen_hamburguesa, text="Hamburguesa", command=lambda: self.agregar_menu("Hamburguesa"))
+        self.btn_hamburguesa.grid(row=0, column=3, padx=10, pady=10)
+        
+        # Tabla de pedido
+        self.tree_pedido = ttk.Treeview(frame, columns=("Nombre del Menú", "Cantidad","Precio Unitario"), show="headings")
         self.tree_pedido.heading("Nombre del Menú", text="Nombre del Menú")
         self.tree_pedido.heading("Cantidad", text="Cantidad")
         self.tree_pedido.heading("Precio Unitario", text="Precio Unitario")
@@ -294,89 +250,40 @@ class App(ctk.CTk):
             messagebox.showwarning("Advertencia", "No hay menús en el pedido.")
             return
 
-        try:
-            # Agrupar los productos por nombre y sumar las cantidades
-            productos_agrupados = defaultdict(lambda: {'cantidad': 0, 'precio': 0})
-            
-            for menu in self.pedido.menus:
-                productos_agrupados[menu.nombre]['cantidad'] += menu.cantidad
-                productos_agrupados[menu.nombre]['precio'] = menu.precio  # Asumimos que el precio es el mismo por producto
+        pdf = FPDF()
+        pdf.add_page()
 
-            # Creación del PDF
-            pdf = FPDF()
-            pdf.add_page()
-            
-            # Establecer fuente y tamaño
-            pdf.set_font("Arial", size=12)
+        pdf.set_font("Arial", size=12)
 
-            # Encabezado de la boleta
-            pdf.cell(200, 10, txt="Boleta Restaurante", ln=True, align="C")
-            pdf.ln(5)
+        pdf.cell(200, 10, txt="Boleta de Compra", ln=True, align="C")
+        
+        pdf.ln(10)
 
-            # Información del negocio
-            pdf.set_font("Arial", size=10)
-            pdf.cell(200, 10, txt="Universidad Catolica", ln=True)
-            pdf.cell(200, 10, txt="RUT: 12345678-9", ln=True)
-            pdf.cell(200, 10, txt="Dirección: Condominio Fundo del Carmen", ln=True)
-            pdf.cell(200, 10, txt="Teléfono: +56 9 1234 5678", ln=True)
-
-            # Fecha a la derecha
-            pdf.set_xy(150, 50)  # Posiciona la fecha en la esquina derecha
-            pdf.cell(50, 10, txt=f"Fecha: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}", ln=True, align="R")
+        # Añadir detalles del pedido
+        pdf.cell(50, 10, txt="Nombre del Menú", border=1)
+        pdf.cell(40, 10, txt="Cantidad", border=1)
+        pdf.cell(50, 10, txt="Precio Unitario", border=1)
+        pdf.cell(40, 10, txt="Total", border=1)
+        pdf.ln(10)
+        
+        # Añadir los menús
+        for menu in self.pedido.menus:
+            pdf.cell(50, 10, txt=menu.nombre, border=1)
+            pdf.cell(40, 10, txt=str(menu.cantidad), border=1)
+            pdf.cell(50, 10, txt=f"${menu.precio:.2f}", border=1)
+            pdf.cell(40, 10, txt=f"${menu.precio * menu.cantidad:.2f}", border=1)
             pdf.ln(10)
 
-            # Encabezado de la tabla
-            pdf.set_xy(10, 70)  # Posiciona la tabla debajo de la información del negocio y fecha
-            pdf.set_font("Arial", "B", 12)
-            pdf.cell(60, 10, txt="Nombre", border=1, align="C")
-            pdf.cell(40, 10, txt="Cantidad", border=1, align="C")
-            pdf.cell(45, 10, txt="Precio Unitario", border=1, align="C")
-            pdf.cell(45, 10, txt="Subtotal", border=1, align="C")
-            pdf.ln()
+        # Total final
+        pdf.ln(10)
+        pdf.cell(50, 10, txt="Total a pagar:", ln=False)
+        pdf.cell(40, 10, txt=f"${self.pedido.total:.2f}", ln=True)
 
-            # Contenido de la tabla
-            pdf.set_font("Arial", size=12)
-            total = 0
-            for nombre, datos in productos_agrupados.items():
-                cantidad = datos['cantidad']
-                precio_unitario = datos['precio']
-                subtotal = precio_unitario * cantidad
-                total += subtotal
+        # Guardar el archivo PDF
+        pdf.output("boleta.pdf")
 
-                pdf.cell(60, 10, txt=nombre, border=1)
-                pdf.cell(40, 10, txt=str(cantidad), border=1, align="C")
-                pdf.cell(45, 10, txt=f"${precio_unitario:.2f}", border=1, align="R")
-                pdf.cell(45, 10, txt=f"${subtotal:.2f}", border=1, align="R")
-                pdf.ln()
-
-            # Subtotales y Totales
-            pdf.ln(5)
-            pdf.cell(145, 10, txt="Subtotal:", align="R")
-            pdf.cell(45, 10, txt=f"${total:.2f}", align="R")
-            pdf.ln()
-
-            iva = total * 0.19
-            pdf.cell(145, 10, txt="IVA (19%):", align="R")
-            pdf.cell(45, 10, txt=f"${iva:.2f}", align="R")
-            pdf.ln()
-
-            total_final = total + iva
-            pdf.cell(145, 10, txt="Total:", align="R")
-            pdf.cell(45, 10, txt=f"${total_final:.2f}", align="R")
-            pdf.ln(10)
-
-            # Pie de página
-            pdf.set_font("Arial", size=10)
-            pdf.cell(200, 10, txt="Gracias por su compra. Para cualquier consulta, llámenos al +56 9 1234 5678.", ln=True, align="C")
-            pdf.cell(200, 10, txt="Los productos adquiridos no tienen garantía.", ln=True, align="C")
-
-            # Guardar PDF
-            pdf.output("boleta.pdf")
-
-            messagebox.showinfo("Éxito", "Boleta generada correctamente como boleta.pdf.")
-        except Exception as e:
-            messagebox.showerror("Error", f"Error al generar la boleta: {str(e)}")
-
+        # Mostrar mensaje de éxito
+        messagebox.showinfo("Éxito", "Boleta generada correctamente como boleta.pdf.")
 
 if __name__ == "__main__":
     app = App()
