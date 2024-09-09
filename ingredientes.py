@@ -15,23 +15,22 @@ class Ingrediente:
 
 class Stock:
     def __init__(self):
-        self.ingredientes = {}
+        self.ingredientes = {}  # Diccionario para almacenar ingredientes y sus cantidades
 
     def agregar_ingrediente(self, nombre, cantidad):
         if nombre in self.ingredientes:
-            self.ingredientes[nombre].agregar_cantidad(cantidad)
+            self.ingredientes[nombre] += cantidad
         else:
-            self.ingredientes[nombre] = Ingrediente(nombre, cantidad)
+            self.ingredientes[nombre] = cantidad
+
+    def ingrediente_existe(self, nombre):
+        return nombre in self.ingredientes
 
     def eliminar_ingrediente(self, nombre):
         if nombre in self.ingredientes:
             del self.ingredientes[nombre]
 
-    def verificar_stock(self, nombre, cantidad):
-        if nombre in self.ingredientes and self.ingredientes[nombre].cantidad >= cantidad:
-            return True
-        else:
-            return False
 
     def mostrar_stock(self):
-        return [(i.nombre, i.cantidad) for i in self.ingredientes.values()]
+        return self.ingredientes.items()
+
