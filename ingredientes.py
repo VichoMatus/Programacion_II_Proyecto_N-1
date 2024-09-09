@@ -38,4 +38,3 @@ class Stock:
         if nombre in self.ingredientes:
             return self.ingredientes[nombre].cantidad >= cantidad
         return False
-

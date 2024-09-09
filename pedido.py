@@ -1,9 +1,10 @@
 class Menu:
-    def __init__(self, nombre, precio, ingredientes):
+    def __init__(self, nombre, precio, ingredientes_requeridos):
         self.nombre = nombre
         self.precio = precio
         self.ingredientes_requeridos = ingredientes_requeridos  # Diccionario {ingrediente: cantidad}
-
+        self.cantidad = 1
+        
 
 class Pedido:
     def __init__(self):
@@ -29,7 +30,7 @@ class Pedido:
 
     def eliminar_menu(self, menu, stock):
         if menu in self.menus:
-            # Restituir el stock de los ingredientes al eliminar el menú
+            # Restituir el stock de los ingredientes al eliminar el menÃº
             for ingrediente, cantidad in menu.ingredientes_requeridos.items():
                 stock.ingredientes[ingrediente].agregar_cantidad(cantidad)
             
