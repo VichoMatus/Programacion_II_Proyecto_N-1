@@ -121,49 +121,6 @@ class App(ctk.CTk):
         btn_boleta = ctk.CTkButton(frame_pedido, text="Generar Boleta", command=self.generar_boleta)
         btn_boleta.grid(row=2, column=6, padx=10, pady=10)
 
-
-    def actualizar_total(self):
-        # Calcular y actualizar el total
-        total = sum(menu.precio for menu in self.pedido.menus)
-        self.label_total.configure(text=f"Total: ${total:.2f}")
-
-    def agregar_menu(self, nombre_menu):
-        menu_data = {
-            "Papas Fritas": {"precio": 500, "ingredientes": {"Papas": 5}},
-            "Pepsi": {"precio": 1100, "ingredientes": {"Bebida": 1}},
-            "Completo": {"precio": 1800, "ingredientes": {"Vianesa": 1, "Pan de Completo": 1, "Tomate": 1, "Palta": 1}},
-            "Hamburguesa": {"precio": 3500, "ingredientes": {"Pan de Hamburguesa": 1, "Lámina de Queso": 1, "Churrasco de Carne": 1}},
-        }
-
-        if nombre_menu in menu_data:
-            menu_info = menu_data[nombre_menu]
-            menu = Menu(nombre_menu, menu_info["precio"], menu_info["ingredientes"])
-
-            if self.pedido.agregar_menu(menu, self.stock):
-                # Verificar si el menú ya está en el Treeview
-                item_exists = False
-                for item in self.tree_pedido.get_children():
-                    valores = self.tree_pedido.item(item, "values")
-                    if valores[0] == nombre_menu:
-                        # Si está, aumentar la cantidad
-                        cantidad_actual = int(valores[1])
-                        nueva_cantidad = cantidad_actual + 1
-                        self.tree_pedido.item(item, values=(nombre_menu, nueva_cantidad, f"${menu.precio}"))
-                        item_exists = True
-                        break
-                
-                if not item_exists:
-                    # Si no está, insertar una nueva fila
-                    self.tree_pedido.insert("", "end", values=(menu.nombre, 1, f"${menu.precio}"))
-                
-                self.actualizar_total()
-                # Actualizar la pestaña de ingredientes
-                self.actualizar_treeview()
-            else:
-                messagebox.showwarning("Advertencia", "No hay suficiente stock para este menú.")
-
-
-
     def ingresar_ingrediente(self):
         nombre = self.combo_ingrediente.get()
         cantidad = self.entry_cantidad.get()
@@ -202,8 +159,6 @@ class App(ctk.CTk):
             self.tree.delete(i)
         for nombre, cantidad in self.stock.mostrar_stock():
             self.tree.insert("", "end", values=(nombre, cantidad))
-
-
     def eliminar_menu(self):
         selected_item = self.tree_pedido.selection()
         if selected_item:

@@ -1,10 +1,9 @@
 class Menu:
-    def __init__(self, nombre, precio, ingredientes_requeridos):
+    def __init__(self, nombre, precio, ingredientes):
         self.nombre = nombre
         self.precio = precio
         self.ingredientes_requeridos = ingredientes_requeridos  # Diccionario {ingrediente: cantidad}
-        self.cantidad = 1
-        
+
 
 class Pedido:
     def __init__(self):
