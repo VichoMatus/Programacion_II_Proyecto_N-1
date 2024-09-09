@@ -7,14 +7,14 @@ class Biblioteca_ejemplo:
         return True  # Libro agregado como nuevo
 
     def eliminar_libro(self, nombre_libro, cantidad=1):
+        libros_eliminados = 0
         for lib in self.lista_libros:
             if lib.nombre == nombre_libro:
                 self.lista_libros.remove(lib)
-                return True
-            else: 
-                return False
-
-
+                libros_eliminados += 1
+                if libros_eliminados >= cantidad:
+                    return True
+        return False  # No se encontró el libro o no se eliminaron suficientes copias
 
     def obtener_libros(self):
         return [libro for libro in self.lista_libros]
