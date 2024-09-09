@@ -133,3 +133,43 @@ class App(ctk.CTk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+
+
+    def generar_boleta(self):
+        if not self.pedido.menus:
+            messagebox.showwarning("Advertencia", "No hay menús en el pedido.")
+            return
+
+        pdf = FPDF()
+        pdf.add_page()
+
+        pdf.set_font("Arial", size=12)
+
+        pdf.cell(200, 10, txt="Boleta de Compra", ln=True, align="C")
+
+        pdf.ln(10)
+
+        # Añadir detalles del pedido
+        pdf.cell(50, 10, txt="Nombre del Menú", border=1)
+        pdf.cell(40, 10, txt="Cantidad", border=1)
+        pdf.cell(50, 10, txt="Precio Unitario", border=1)
+        pdf.cell(40, 10, txt="Total", border=1)
+        pdf.ln(10)
+    
+        for menu in self.pedido.menus:
+            pdf.cell(50, 10, txt=menu.nombre, border=1)
+            pdf.cell(40, 10, txt=str(menu.cantidad), border=1)
+            pdf.cell(50, 10, txt=f"${menu.precio:.2f}", border=1)
+            pdf.cell(40, 10, txt=f"${menu.precio * menu.cantidad:.2f}", border=1)
+            pdf.ln(10)
+
+        # Total final
+        pdf.ln(10)
+        pdf.cell(50, 10, txt="Total a pagar:", ln=False)
+        pdf.cell(40, 10, txt=f"${self.pedido.total:.2f}", ln=True)
+
+        # Guardar el archivo PDF
+        pdf.output("boleta.pdf")
+
+        # Mostrar mensaje de éxito
+        messagebox.showinfo("Éxito", "Boleta generada correctamente como boleta.pdf.")
