@@ -2,13 +2,9 @@ class Menu:
     def __init__(self, nombre, precio, ingredientes_requeridos):
         self.nombre = nombre
         self.precio = precio
-<<<<<<< Updated upstream
         self.ingredientes_requeridos = ingredientes_requeridos  # Diccionario {ingrediente: cantidad}
         self.cantidad = 1
         
-=======
-        self.ingredientes_requeridos = ingredientes_requeridos 
->>>>>>> Stashed changes
 
 class Pedido:
     def __init__(self):
