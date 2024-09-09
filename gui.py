@@ -4,6 +4,7 @@ from tkinter import ttk
 from ingredientes import Stock
 from pedido import Pedido, Menu
 from PIL import Image
+from fpdf import FPDF
 
 class App(ctk.CTk):
     def __init__(self):
@@ -12,7 +13,6 @@ class App(ctk.CTk):
         self.geometry("800x600")
         self.stock = Stock()
         self.pedido = Pedido()
-
 
         # Pestañas
         self.tabs = ctk.CTkTabview(self)
@@ -72,48 +72,97 @@ class App(ctk.CTk):
         frame = ctk.CTkFrame(self.tab_pedido)
         frame.pack(fill="both", expand=True)
 
+        # Crear dos CTkFrames, uno para los menús y otro para la tabla de pedidos
+        frame_menus = ctk.CTkFrame(frame)
+        frame_menus.pack(side="top", fill="x", padx=10, pady=10)
+
+        frame_pedido = ctk.CTkFrame(frame)
+        frame_pedido.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+
         # Menús disponibles (ejemplo con imágenes)
-        img_papas = Image.open("iconos/icono_papas_fritas.png")  # Cargar imagen de papas fritas
-        img_completo = Image.open("iconos/icono_hotdog.png")   # Cargar imagen de completo
-        img_pepsi = Image.open("iconos/icono_cola.png")         # Cargar imagen de pepsi
-        img_hamburguesa = Image.open("iconos/icono_hamburguesa.png")  # Cargar imagen de hamburguesa
+        img_papas = Image.open("iconos/icono_papas_fritas.png")
+        img_completo = Image.open("iconos/icono_hotdog.png")
+        img_pepsi = Image.open("iconos/icono_cola.png")
+        img_hamburguesa = Image.open("iconos/icono_hamburguesa.png")
 
+        self.imagen_papas = ctk.CTkImage(img_papas)
+        self.imagen_completo = ctk.CTkImage(img_completo)
+        self.imagen_pepsi = ctk.CTkImage(img_pepsi)
+        self.imagen_hamburguesa = ctk.CTkImage(img_hamburguesa)
 
-        self.imagen_papas = ctk.CTkImage(img_papas)  # Cargar imagen de papas fritas en ctk
-        self.imagen_completo = ctk.CTkImage(img_completo)   # Cargar imagen de completo en ctk
-        self.imagen_pepsi = ctk.CTkImage(img_pepsi)         # Cargar imagen de pepsi en ctk
-        self.imagen_hamburguesa = ctk.CTkImage(img_hamburguesa)  # Cargar imagen de hamburguesa en ctk
-
-        # Botones de Menús con imágenes
-        self.btn_papas = ctk.CTkButton(frame, image=self.imagen_papas, text="Papas Fritas", command=lambda: self.agregar_menu("Papas Fritas"))
+        # Botones de Menús con imágenes en el frame de menús
+        self.btn_papas = ctk.CTkButton(frame_menus, image=self.imagen_papas, width=64, height=64, text="Papas Fritas", command=lambda: self.agregar_menu("Papas Fritas"), fg_color="transparent")
         self.btn_papas.grid(row=0, column=0, padx=10, pady=10)
 
-        self.btn_completo = ctk.CTkButton(frame, image=self.imagen_completo, text="Completo", command=lambda: self.agregar_menu("Completo"))
+        self.btn_completo = ctk.CTkButton(frame_menus, image=self.imagen_completo, text="Completo", command=lambda: self.agregar_menu("Completo"), fg_color="transparent")
         self.btn_completo.grid(row=0, column=1, padx=10, pady=10)
 
-        self.btn_pepsi = ctk.CTkButton(frame, image=self.imagen_pepsi, text="Pepsi", command=lambda: self.agregar_menu("Pepsi"))
-        self.btn_pepsi.grid(row=0, column=2, padx=10, pady=10)
+        self.btn_pepsi = ctk.CTkButton(frame_menus, image=self.imagen_pepsi, text="Pepsi", command=lambda: self.agregar_menu("Pepsi"), fg_color="transparent")
+        self.btn_pepsi.grid(row=1, column=0, padx=10, pady=10)
 
-        self.btn_hamburguesa = ctk.CTkButton(frame, image=self.imagen_hamburguesa, text="Hamburguesa", command=lambda: self.agregar_menu("Hamburguesa"))
-        self.btn_hamburguesa.grid(row=0, column=3, padx=10, pady=10)
+        self.btn_hamburguesa = ctk.CTkButton(frame_menus, image=self.imagen_hamburguesa, border_color="White", text="Hamburguesa", command=lambda: self.agregar_menu("Hamburguesa"), fg_color="transparent")
+        self.btn_hamburguesa.grid(row=1, column=1, padx=10, pady=10)
 
-        # Tabla de pedido
-        self.tree_pedido = ttk.Treeview(frame, columns=("Nombre del Menú", "Cantidad","Precio Unitario"), show="headings")
+        # Tabla de pedido en el frame de pedido
+        self.tree_pedido = ttk.Treeview(frame_pedido, columns=("Nombre del Menú", "Cantidad", "Precio Unitario"), show="headings")
         self.tree_pedido.heading("Nombre del Menú", text="Nombre del Menú")
         self.tree_pedido.heading("Cantidad", text="Cantidad")
         self.tree_pedido.heading("Precio Unitario", text="Precio Unitario")
-        self.tree_pedido.grid(row=1, column=0, columnspan=4, padx=10, pady=10)
+        self.tree_pedido.grid(row=1, column=6, columnspan=4, padx=10, pady=10)
 
-        # Total y botón de eliminar
-        self.label_total = ctk.CTkLabel(frame, text="Total: $0.00")
-        self.label_total.grid(row=2, column=0, columnspan=2, pady=10)
+        # Total y botón de eliminar en el frame de pedido
+        self.label_total = ctk.CTkLabel(frame_pedido, text="Total: $0.00")
+        self.label_total.grid(row=0, column=8, columnspan=2, pady=10)
 
-        self.btn_eliminar = ctk.CTkButton(frame, text="Eliminar Menú", command=self.eliminar_menu)
-        self.btn_eliminar.grid(row=2, column=2, padx=10, pady=10)
+        self.btn_eliminar = ctk.CTkButton(frame_pedido, text="Eliminar Menú", command=self.eliminar_menu)
+        self.btn_eliminar.grid(row=0, column=11, padx=10, pady=10)
 
-        # Botón para generar boleta
-        btn_boleta = ctk.CTkButton(frame, text="Generar Boleta", command=self.generar_boleta)
-        btn_boleta.grid(row=2, column=3, padx=10, pady=10)
+        # Botón para generar boleta en el frame de pedido
+        btn_boleta = ctk.CTkButton(frame_pedido, text="Generar Boleta", command=self.generar_boleta)
+        btn_boleta.grid(row=2, column=6, padx=10, pady=10)
+
+
+    def actualizar_total(self):
+        # Calcular y actualizar el total
+        total = sum(menu.precio for menu in self.pedido.menus)
+        self.label_total.configure(text=f"Total: ${total:.2f}")
+
+    def agregar_menu(self, nombre_menu):
+        menu_data = {
+            "Papas Fritas": {"precio": 500, "ingredientes": {"Papas": 5}},
+            "Pepsi": {"precio": 1100, "ingredientes": {"Bebida": 1}},
+            "Completo": {"precio": 1800, "ingredientes": {"Vianesa": 1, "Pan de Completo": 1, "Tomate": 1, "Palta": 1}},
+            "Hamburguesa": {"precio": 3500, "ingredientes": {"Pan de Hamburguesa": 1, "Lámina de Queso": 1, "Churrasco de Carne": 1}},
+        }
+
+        if nombre_menu in menu_data:
+            menu_info = menu_data[nombre_menu]
+            menu = Menu(nombre_menu, menu_info["precio"], menu_info["ingredientes"])
+
+            if self.pedido.agregar_menu(menu, self.stock):
+                # Verificar si el menú ya está en el Treeview
+                item_exists = False
+                for item in self.tree_pedido.get_children():
+                    valores = self.tree_pedido.item(item, "values")
+                    if valores[0] == nombre_menu:
+                        # Si está, aumentar la cantidad
+                        cantidad_actual = int(valores[1])
+                        nueva_cantidad = cantidad_actual + 1
+                        self.tree_pedido.item(item, values=(nombre_menu, nueva_cantidad, f"${menu.precio}"))
+                        item_exists = True
+                        break
+                
+                if not item_exists:
+                    # Si no está, insertar una nueva fila
+                    self.tree_pedido.insert("", "end", values=(menu.nombre, 1, f"${menu.precio}"))
+                
+                self.actualizar_total()
+                # Actualizar la pestaña de ingredientes
+                self.actualizar_treeview()
+            else:
+                messagebox.showwarning("Advertencia", "No hay suficiente stock para este menú.")
+
+
 
     def ingresar_ingrediente(self):
         nombre = self.combo_ingrediente.get()
@@ -153,14 +202,71 @@ class App(ctk.CTk):
             self.tree.delete(i)
         for nombre, cantidad in self.stock.mostrar_stock():
             self.tree.insert("", "end", values=(nombre, cantidad))
+
+
     def eliminar_menu(self):
         selected_item = self.tree_pedido.selection()
         if selected_item:
+            valores = self.tree_pedido.item(selected_item, "values")
+            nombre_menu = valores[0]
+            cantidad_menu = int(valores[1])
+            
+            # Buscar el menú en el pedido
+            menu_data = {
+                "Papas Fritas": {"precio": 500, "ingredientes": {"Papas": 5}},
+                "Pepsi": {"precio": 1100, "ingredientes": {"Bebida": 1}},
+                "Completo": {"precio": 1800, "ingredientes": {"Vianesa": 1, "Pan de Completo": 1, "Tomate": 1, "Palta": 1}},
+                "Hamburguesa": {"precio": 3500, "ingredientes": {"Pan de Hamburguesa": 1, "Lámina de Queso": 1, "Churrasco de Carne": 1}},
+            }
+
+            for _ in range(cantidad_menu):
+                menu_info = menu_data.get(nombre_menu, {"ingredientes": {}})
+                menu = Menu(nombre_menu, menu_info.get("precio", 0), menu_info["ingredientes"])
+                self.pedido.eliminar_menu(menu, self.stock)
+            
             self.tree_pedido.delete(selected_item)
+            self.actualizar_total()
+            # Actualizar la pestaña de ingredientes
+            self.actualizar_treeview()
         else:
             messagebox.showwarning("Advertencia", "No has seleccionado ningún menú.")
+
     def generar_boleta(self):
-        pass
+        if not self.pedido.menus:
+            messagebox.showwarning("Advertencia", "No hay menús en el pedido.")
+            return
+        
+        try:
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+
+            pdf.cell(200, 10, txt="Boleta de Compra", ln=True, align="C")
+            pdf.ln(10)
+
+            pdf.cell(50, 10, txt="Nombre del Menú", border=1)
+            pdf.cell(40, 10, txt="Cantidad", border=1)
+            pdf.cell(50, 10, txt="Precio Unitario", border=1)
+            pdf.cell(40, 10, txt="Total", border=1)
+            pdf.ln(10)
+
+            for menu in self.pedido.menus:
+                print(f"Nombre: {menu.nombre}, Cantidad: {menu.cantidad}, Precio: {menu.precio}")  # Depuración
+                pdf.cell(50, 10, txt=menu.nombre, border=1)
+                pdf.cell(40, 10, txt=str(menu.cantidad), border=1)
+                pdf.cell(50, 10, txt=f"${menu.precio:.2f}", border=1)
+                pdf.cell(40, 10, txt=f"${menu.precio * menu.cantidad:.2f}", border=1)
+                pdf.ln(10)
+
+            pdf.ln(10)
+            pdf.cell(50, 10, txt="Total a pagar:", ln=False)
+            pdf.cell(40, 10, txt=f"${self.pedido.total:.2f}", ln=True)
+
+            pdf.output("boleta.pdf")
+
+            messagebox.showinfo("Éxito", "Boleta generada correctamente como boleta.pdf.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al generar la boleta: {str(e)}")
 
 
 if __name__ == "__main__":
