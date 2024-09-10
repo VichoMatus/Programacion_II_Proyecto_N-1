@@ -10,18 +10,24 @@ class Pedido:
         self.total = 0
 
     def agregar_menu(self, menu, stock):
+        # Verificar si hay suficiente stock de cada ingrediente
         for ingrediente, cantidad in menu.ingredientes_requeridos.items():
             if not stock.verificar_stock(ingrediente, cantidad):
                 return False  # No hay suficiente stock
+        
+        # Reducir el stock de los ingredientes usados
         for ingrediente, cantidad in menu.ingredientes_requeridos.items():
             stock.ingredientes[ingrediente].reducir_cantidad(cantidad)
+        
         self.menus.append(menu)
         self.total += menu.precio
         return True
 
     def eliminar_menu(self, menu, stock):
         if menu in self.menus:
+            # Restituir el stock de los ingredientes al eliminar el menú
             for ingrediente, cantidad in menu.ingredientes_requeridos.items():
                 stock.ingredientes[ingrediente].agregar_cantidad(cantidad)
+            
             self.menus.remove(menu)
             self.total -= menu.precio
