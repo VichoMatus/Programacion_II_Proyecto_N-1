@@ -56,15 +56,23 @@ class App(ctk.CTk):
         btn_ingresar = ctk.CTkButton(frame_izquierda, text="Ingresar Ingrediente", command=self.ingresar_ingrediente)
         btn_ingresar.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
+        # Frame para botones en frame_derecha
+        frame_botones = ctk.CTkFrame(frame_derecha)
+        frame_botones.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+
+        # Configurar columnas del frame_botones para centrar el botón
+        frame_botones.grid_columnconfigure(0, weight=0)
+        frame_botones.grid_columnconfigure(1, weight=1)
+        
+        # Botón Eliminar (centrado en la parte superior del nuevo frame)
+        btn_eliminar = ctk.CTkButton(frame_botones, text="Eliminar Ingrediente", command=self.eliminar_ingrediente, fg_color="black", text_color="White", width=30, height=30)
+        btn_eliminar.grid(row=0, column=1, padx=10, pady=10)
+        
         # Frame Derecha - Visualización de Ingredientes
-        self.tree = ttk.Treeview(frame_derecha, columns=("Nombre", "Cantidad"), show="headings", height=15)
+        self.tree = ttk.Treeview(frame_derecha, columns=("Nombre", "Cantidad"), show="headings", height=20)
         self.tree.heading("Nombre", text="Nombre")
         self.tree.heading("Cantidad", text="Cantidad")
-        self.tree.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-
-        # Botón Eliminar (debajo del Treeview)
-        btn_eliminar = ctk.CTkButton(frame_derecha, text="Eliminar Ingrediente", command=self.eliminar_ingrediente)
-        btn_eliminar.grid(row=1, column=0, padx=10, pady=10, sticky="e")
+        self.tree.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
         # Botón Generar Menú
         btn_generar_menu = ctk.CTkButton(frame_derecha, text="Generar Menú")
@@ -81,21 +89,23 @@ class App(ctk.CTk):
         frame_pedido = ctk.CTkFrame(frame)
         frame_pedido.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
-        # Menús disponibles (ejemplo con imágenes)
-        img_papas = Image.open("iconos/icono_papas_fritas.png").resize((100,100))
-        img_completo = Image.open("iconos/icono_hotdog.png").resize((100,100))
-        img_pepsi = Image.open("iconos/icono_cola.png").resize((100,100))
-        img_hamburguesa = Image.open("iconos/icono_hamburguesa.png").resize((100,100))
+        img_papas = Image.open("iconos/icono_papas_fritas.png").resize((150, 150), Image.Resampling.LANCZOS)
+        img_completo = Image.open("iconos/icono_hotdog.png").resize((150, 150), Image.Resampling.LANCZOS)
+        img_pepsi = Image.open("iconos/icono_cola.png").resize((150, 150), Image.Resampling.LANCZOS)
+        img_hamburguesa = Image.open("iconos/icono_hamburguesa.png").resize((150, 150), Image.Resampling.LANCZOS)
+
+      
 
         self.imagen_papas = ctk.CTkImage(img_papas)
         self.imagen_completo = ctk.CTkImage(img_completo)
         self.imagen_pepsi = ctk.CTkImage(img_pepsi)
         self.imagen_hamburguesa = ctk.CTkImage(img_hamburguesa)
 
-        self.imagen_papas = ctk.CTkImage(img_papas)
-        self.imagen_completo = ctk.CTkImage(img_completo)
-        self.imagen_pepsi = ctk.CTkImage(img_pepsi)
-        self.imagen_hamburguesa = ctk.CTkImage(img_hamburguesa)
+          # Crear objetos CTkImage con las imágenes redimensionadas
+        self.imagen_papas = ctk.CTkImage(light_image=img_papas, size=(80, 80))
+        self.imagen_completo = ctk.CTkImage(light_image=img_completo, size=(80, 80))
+        self.imagen_pepsi = ctk.CTkImage(light_image=img_pepsi, size=(80, 80))
+        self.imagen_hamburguesa = ctk.CTkImage(light_image=img_hamburguesa, size=(80, 80))
 
         #Botones de Menús con imágenes en el frame de menús
         self.btn_papas = ctk.CTkButton(
@@ -167,7 +177,7 @@ class App(ctk.CTk):
         self.tree_pedido.heading("Nombre del Menú", text="Nombre del Menú")
         self.tree_pedido.heading("Cantidad", text="Cantidad")
         self.tree_pedido.heading("Precio Unitario", text="Precio Unitario")
-        self.tree_pedido.grid(row=1, column=4, columnspan=4, padx=10, pady=10, sticky="e")
+        self.tree_pedido.grid(row=1, column=4, columnspan=4, padx=10, pady=10, sticky="nsew")
 
         # Total y botón de eliminar en el frame de pedido
         self.label_total = ctk.CTkLabel(frame_pedido, text="Total: $0.00")
