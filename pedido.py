@@ -30,7 +30,7 @@ class Pedido:
 
     def eliminar_menu(self, menu, stock):
         if menu in self.menus:
-            # Restituir el stock de los ingredientes al eliminar el menÃº
+            # Restituir el stock de los ingredientes al eliminar el menú
             for ingrediente, cantidad in menu.ingredientes_requeridos.items():
                 stock.ingredientes[ingrediente].agregar_cantidad(cantidad)
             
@@ -39,3 +39,5 @@ class Pedido:
             
             # Restablecer la cantidad de los ingredientes usados
             self.ingredientes_usados.remove(menu.ingredientes_requeridos)
+            return True
+        return False

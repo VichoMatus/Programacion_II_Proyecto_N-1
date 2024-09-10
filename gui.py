@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from tkinter import messagebox, PhotoImage
+from tkinter import messagebox
 from tkinter import ttk
 from ingredientes import Stock
 from pedido import Pedido, Menu
@@ -89,10 +89,10 @@ class App(ctk.CTk):
         frame_pedido = ctk.CTkFrame(frame)
         frame_pedido.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
-        img_papas = Image.open("iconos/icono_papas_fritas.png").resize((150, 150), Image.Resampling.LANCZOS)
-        img_completo = Image.open("iconos/icono_hotdog.png").resize((150, 150), Image.Resampling.LANCZOS)
-        img_pepsi = Image.open("iconos/icono_cola.png").resize((150, 150), Image.Resampling.LANCZOS)
-        img_hamburguesa = Image.open("iconos/icono_hamburguesa.png").resize((150, 150), Image.Resampling.LANCZOS)
+        img_papas = Image.open("iconos/icono_papas_fritas.png").resize((80, 80), Image.Resampling.LANCZOS)
+        img_completo = Image.open("iconos/icono_hotdog.png").resize((80, 80), Image.Resampling.LANCZOS)
+        img_pepsi = Image.open("iconos/icono_cola.png").resize((80, 80), Image.Resampling.LANCZOS)
+        img_hamburguesa = Image.open("iconos/icono_hamburguesa.png").resize((80, 80), Image.Resampling.LANCZOS)
 
       
 
@@ -111,66 +111,74 @@ class App(ctk.CTk):
         self.btn_papas = ctk.CTkButton(
             frame_menus, 
             image=self.imagen_papas, 
-            width=100, 
-            height=100,  # Aumentando la altura para el texto
+            width=90,    
+            height=90,   
             text="Papas Fritas", 
             command=lambda: self.agregar_menu("Papas Fritas"), 
             fg_color="transparent",
             text_color="black",
-            border_color="green",  # Borde visible
-            border_width=3,        # Grosor del borde
-            compound="top",         # Texto debajo de la imagen
-            hover_color="red"
+            border_color="green",
+            border_width=3,
+            compound="top"
         )
         self.btn_papas.grid(row=0, column=0, padx=10, pady=10)
+
+        # Evento para cambiar el borde a rojo cuando el ratón pasa sobre el botón
+        self.btn_papas.bind("<Enter>", lambda e: self.btn_papas.configure(border_color="red"))
+        # Evento para restaurar el borde original cuando el ratón sale del botón
+        self.btn_papas.bind("<Leave>", lambda e: self.btn_papas.configure(border_color="green"))
 
         self.btn_completo = ctk.CTkButton(
             frame_menus, 
             image=self.imagen_completo, 
-            width=100, 
-            height=100,
+            width=90, 
+            height=90,
             text="Completo", 
             command=lambda: self.agregar_menu("Completo"), 
             fg_color="transparent",
             text_color="black",
             border_color="green", 
             border_width=3,
-            compound="top",
-            hover_color="red"
+            compound="top"
         )
         self.btn_completo.grid(row=0, column=1, padx=10, pady=10)
+
+        self.btn_completo.bind("<Enter>", lambda e: self.btn_completo.configure(border_color="red"))
+        self.btn_completo.bind("<Leave>", lambda e: self.btn_completo.configure(border_color="green"))
 
         self.btn_pepsi = ctk.CTkButton(
             frame_menus, 
             image=self.imagen_pepsi, 
-            width=100, 
-            height=100, 
+            width=90, 
+            height=90, 
             text="Pepsi", 
             command=lambda: self.agregar_menu("Pepsi"), 
             fg_color="transparent",
             text_color="black",
             border_color="green", 
             border_width=3,
-            compound="top",
-            hover_color="red"
+            compound="top"
         )
         self.btn_pepsi.grid(row=1, column=0, padx=10, pady=10)
+        self.btn_pepsi.bind("<Enter>", lambda e: self.btn_pepsi.configure(border_color="red"))
+        self.btn_pepsi.bind("<Leave>", lambda e: self.btn_pepsi.configure(border_color="green"))
 
         self.btn_hamburguesa = ctk.CTkButton(
             frame_menus, 
             image=self.imagen_hamburguesa, 
-            width=100, 
-            height=100, 
+            width=90, 
+            height=90, 
             text="Hamburguesa", 
             command=lambda: self.agregar_menu("Hamburguesa"), 
             fg_color="transparent",
             text_color="black",
             border_color="green", 
             border_width=3,
-            compound="top",
-            hover_color="red"
+            compound="top"
         )
         self.btn_hamburguesa.grid(row=1, column=1, padx=10, pady=10)
+        self.btn_hamburguesa.bind("<Enter>", lambda e: self.btn_hamburguesa.configure(border_color="red"))
+        self.btn_hamburguesa.bind("<Leave>", lambda e: self.btn_hamburguesa.configure(border_color="green"))
 
         # Tabla de pedido en el frame de pedido
         self.tree_pedido = ttk.Treeview(frame_pedido, columns=("Nombre del Menú", "Cantidad", "Precio Unitario"), show="headings")
@@ -328,7 +336,7 @@ class App(ctk.CTk):
             pdf.cell(200, 10, txt="Universidad Catolica", ln=True)
             pdf.cell(200, 10, txt="RUT: 12345678-9", ln=True)
             pdf.cell(200, 10, txt="Dirección: Condominio Fundo del Carmen", ln=True)
-            pdf.cell(200, 10, txt="Teléfono: +56 9 1234 5678", ln=True)
+            pdf.cell(200, 10, txt="Teléfono: +56 9 9879 7181", ln=True)
 
             # Fecha a la derecha
             pdf.set_xy(150, 50)  # Posiciona la fecha en la esquina derecha
